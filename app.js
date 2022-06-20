@@ -1,6 +1,7 @@
 // NPM MODULES ----------------------------------------------------------->
 const express = require("express");
 const ejs = require("ejs");
+var _ = require("lodash");
 
 // USING MODULES---------------------------------------------------------->
 const app = express();
@@ -9,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 // LISTENING TO SERVER--------------------------------------------------------------->
-app.listen(3000, function () {
+app.listen(process.env.PORT || 3000, function () {
     console.log("Server started on port 3000");
 });
 
@@ -39,6 +40,20 @@ app.get("/contact", (req, res) => {
 
 app.get("/compose", (req, res) => {
     res.render("compose");
+});
+
+app.get("/posts/:postName", (req, res) => {
+    // console.log(req.params);
+    let postName = req.params.postName;
+    postName = _.lowerCase(postName);
+
+    posts.forEach((post) => {
+        // console.log("finding a valid match for ...", postName);
+        if (post.title == postName) {
+            // console.log("Match found!");
+            res.render("post", { post: post });
+        }
+    });
 });
 
 // POST REQUESTS ------------------------------------------------------------->
